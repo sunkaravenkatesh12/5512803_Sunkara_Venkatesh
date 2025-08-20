@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+int daysInMonth(int m, int y) {
+    if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
+        return 31;
+    else if (m == 4 || m == 6 || m == 9 || m == 11)
+        return 30;
+    else { // February
+        if ((y % 400 == 0) || (y % 4 == 0 && y % 100 != 0))
+            return 29;
+        else
+            return 28;
+    }
+}
+
+int findPrimeDates(int d1, int m1, int y1, int d2, int m2, int y2) {
+    int count = 0;
+    int d = d1, m = m1, y = y1;
+
+    while (y < y2 || (y == y2 && m < m2) || (y == y2 && m == m2 && d <= d2)) {
+        long num = d;
+        num = num * 100 + m;
+        num = num * 10000 + y;
+
+        if (num % 4 == 0 || num % 7 == 0)
+            count++;
+
+        d++;
+        if (d > daysInMonth(m, y)) {
+            d = 1;
+            m++;
+            if (m > 12) {
+                m = 1;
+                y++;
+            }
+        }
+    }
+    return count;
+}
+
+int main() {
+    char start[11], end[11];
+    scanf("%s %s", start, end);
+
+    int d1, m1, y1, d2, m2, y2;
+    sscanf(start, "%2d-%2d-%4d", &d1, &m1, &y1);
+    sscanf(end, "%2d-%2d-%4d", &d2, &m2, &y2);
+
+    int ans = findPrimeDates(d1, m1, y1, d2, m2, y2);
+    printf("%d\n", ans);
+    return 0;
+}
